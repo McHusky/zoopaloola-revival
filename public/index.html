@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#102d22">
+  <meta name="description" content="Zoopaloola Revival: Ein tierisches Zwei-Spieler-Billardduell, inspiriert vom ICQ-Kultspiel. Privat mit Freunden im Browser spielen.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Zoopaloola Revival | Das tierische Duell</title>
+</head>
+<body>
+  <div class="page-ambient ambient-one" aria-hidden="true"></div>
+  <div class="page-ambient ambient-two" aria-hidden="true"></div>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="/" title="Zur Startseite">
+        <span class="brand-badge" aria-hidden="true">Z<span class="little-leaf">&#10047;</span></span>
+        <span class="brand-wordmark"><b>ZOOPALOO<span>LA</span></b><small>REVIVAL <i></i> FAN PROJECT</small></span>
+      </a>
+      <div class="header-actions">
+        <span class="online-chip"><i></i> 2-PLAYER ONLINE</span>
+        <button type="button" id="audioToggle" class="icon-button" aria-label="Ton ein- oder ausschalten" title="Ton an / aus">&#9835; <span id="audioLabel">Ton an</span></button>
+      </div>
+    </header>
+
+    <div class="content-grid">
+      <aside class="control-column">
+        <div class="eyebrow"><span class="eyebrow-diamond"></span> BACK TO THE JUNGLE <span class="eyebrow-diamond"></span></div>
+        <h1 class="hero-heading">Kleine Tiere.<br><em>Gro&szlig;e</em> Duelle.</h1>
+        <p class="hero-copy">Das legend&auml;re Tier-Billard ist zur&uuml;ck. Schnapp dir deine Crew, peile deine Gegner an und bef&ouml;rdere sie &uuml;ber den Klippenrand.</p>
+
+        <section id="lobbyPanel" class="panel lobby-panel" aria-label="Spielraum erstellen">
+          <div class="panel-topline"><span class="mini-icon">&#10022;</span> DEIN DSCHUNGEL-ABENTEUER</div>
+          <label for="playerName" class="field-label">DEIN SPIELERNAME</label>
+          <input id="playerName" type="text" maxlength="22" autocomplete="nickname" placeholder="Wie hei&szlig;t du?" value="Dschungelheld">
+          <div class="field-label species-heading">W&Auml;HLE DEIN TIER</div>
+          <div class="species-grid" id="speciesChoices" role="group" aria-label="Tier auswaehlen">
+            <button type="button" class="species-choice selected" data-species="lion" aria-pressed="true"><span class="species-emoji">&#129409;</span><span>L&Ouml;WE</span></button>
+            <button type="button" class="species-choice" data-species="elephant" aria-pressed="false"><span class="species-emoji">&#128024;</span><span>ELEFANT</span></button>
+            <button type="button" class="species-choice" data-species="monkey" aria-pressed="false"><span class="species-emoji">&#128018;</span><span>AFFE</span></button>
+            <button type="button" class="species-choice" data-species="hippo" aria-pressed="false"><span class="species-emoji">&#129435;</span><span>NILPFERD</span></button>
+          </div>
+          <button id="createRoom" class="cta primary" type="button">PRIVATEN RAUM ERSTELLEN <span>&rarr;</span></button>
+          <div class="or-divider"><span>ODER EINLADUNG ANNEHMEN</span></div>
+          <div class="join-row">
+            <input id="roomCode" aria-label="Raumcode" maxlength="6" autocomplete="off" placeholder="RAUMCODE">
+            <button id="joinRoom" type="button" class="cta secondary">BEITRETEN</button>
+          </div>
+          <button id="localRoom" type="button" class="local-button">&#127918; Lokal zu zweit an einem Ger&auml;t spielen <span>&rarr;</span></button>
+        </section>
+
+        <section id="gamePanel" class="panel game-panel hidden" aria-label="Aktive Partie">
+          <div class="panel-topline"><span class="mini-icon">&#10022;</span> DEINE PARTIE</div>
+          <div class="room-label">SPIELRAUM</div>
+          <div class="room-code-wrap"><strong id="currentRoomCode">------</strong><span id="roomType">PRIVAT</span></div>
+          <button id="copyInvite" type="button" class="cta primary">EINLADUNG KOPIEREN <span>&nearr;</span></button>
+          <p class="muted-note" id="inviteHint">Teile den Link mit deinem Freund auf Discord.</p>
+          <div class="turn-box" id="turnBox">
+            <span class="turn-icon" id="turnIndicator">&#9679;</span>
+            <div><small id="turnLabel">AM ZUG</small><strong id="turnName">Warte auf Mitspieler</strong></div>
+          </div>
+          <p class="instruction" id="instruction">W&auml;hle eines deiner Tiere und ziehe f&uuml;r den Schuss entgegen der gew&uuml;nschten Richtung.</p>
+          <button id="rematch" type="button" class="cta primary hidden">REVANCHE SPIELEN <span>&#8635;</span></button>
+          <button id="backToLobby" type="button" class="text-button">&larr; Zur Startseite</button>
+        </section>
+
+        <section class="instructions-card" aria-label="Spielregeln">
+          <div class="rules-heading"><span>&#10022;</span> SO GEHT'S</div>
+          <div class="rule-line"><span class="rule-step">01</span><p><b>Tier ausw&auml;hlen</b><small>Klicke auf einen eigenen Spielstein.</small></p></div>
+          <div class="rule-line"><span class="rule-step">02</span><p><b>Ziehen &amp; loslassen</b><small>Ziehe zum Ausholen nach hinten.</small></p></div>
+          <div class="rule-line"><span class="rule-step">03</span><p><b>Gegner raus!</b><small>Sto&szlig;e alle gegnerischen Tiere ins Aus.</small></p></div>
+        </section>
+      </aside>
+
+      <section class="arena-column" aria-label="Spielarena">
+        <div class="arena-topline"><div><span class="eyebrow small-eyebrow">THE JUNGLE ARENA</span><h2>Das Duell beginnt hier.</h2></div><div class="arena-bubble"><span class="pulse-dot"></span><span id="arenaStatus">SPIELVORSCHAU</span></div></div>
+        <div class="scoreboard">
+          <div class="score-team score-orange" id="scoreLeft"><span class="score-avatar" id="avatarLeft">&#129409;</span><div class="score-player"><small>TEAM SONNENFEUER</small><strong id="nameLeft">Spieler 1</strong></div><span class="score-number" id="scoreNumberLeft">6</span></div>
+          <span class="score-versus">VS</span>
+          <div class="score-team score-blue" id="scoreRight"><span class="score-number" id="scoreNumberRight">6</span><div class="score-player"><small>TEAM MONDSCHEIN</small><strong id="nameRight">Spieler 2</strong></div><span class="score-avatar" id="avatarRight">&#129435;</span></div>
+        </div>
+        <div class="arena-frame" id="arenaFrame">
+          <div class="wood-top" aria-hidden="true"><span>&#10045;</span> THE WILDEST BILLIARDS MATCH <span>&#10045;</span></div>
+          <canvas id="gameCanvas" width="960" height="720" aria-label="Spielfeld mit Tier-Spielsteinen" role="img"></canvas>
+          <div id="arenaOverlay" class="arena-overlay">
+            <div class="overlay-content"><span class="overlay-symbol">&#10022;</span><span class="overlay-kicker" id="overlayKicker">WELCOME TO THE JUNGLE</span><h3 id="overlayTitle">Bist du bereit f&uuml;r den<br>gro&szlig;en Showdown?</h3><p id="overlayText">Erstelle einen Raum oder spiele lokal. Die Arena wartet auf dich!</p><button id="overlayAction" type="button">JETZT LOSLEGEN &rarr;</button></div>
+          </div>
+          <div class="wood-bottom"><span>EST. 2005 &mdash; REIMAGINED 2026</span><span>&#9829; MADE FOR FRIENDS</span></div>
+        </div>
+        <div class="arena-footer"><span><span class="footer-icon">&#9679;</span> <strong>12</strong> Tiere. <strong>2</strong> Spieler. <strong>1</strong> Gewinner.</span><span id="powerHint">TIPP: ZUM ZIELEN ZUR&Uuml;CKZIEHEN</span></div>
+        <div class="credits">Ein unabh&auml;ngiges Fanprojekt als Hommage an <a href="https://www.youtube.com/watch?v=pTyRH9i6BP0" rel="noopener noreferrer" target="_blank">Zoopaloola</a> aus der ICQ-Zeit. Alle Spielgrafiken und Kl&auml;nge sind neu erstellt. Keine Verbindung zum Originalhersteller.</div>
+      </section>
+    </div>
+    <footer class="footer"><span>ZOOPALOO(LA) REVIVAL <span class="footer-divider">/</span> JUST FOR FUN</span><span>SPIELEN <span class="footer-divider">&bull;</span> LACHEN <span class="footer-divider">&bull;</span> REVANCHE</span></footer>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
