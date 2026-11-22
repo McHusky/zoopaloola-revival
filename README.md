@@ -35,9 +35,9 @@ Wähle **Solo spielen** und stelle den Schwierigkeitsgrad ein:
 
 | Schwierigkeit | Was dich erwartet |
 |---|---|
-| **Einfach** | Lockerer Einstieg mit gelegentlichen Fehlschüssen |
-| **Normal** | Der Computer prüft mehr Stoßmöglichkeiten |
-| **Schwer** | Bessere Schussauswahl anhand simulierter Kugelbahnen |
+| **Einfach** | Lockerer Einstieg: weniger überlegte Schüsse und häufigere Zielabweichungen |
+| **Normal** | Ein fairer Gegner: findet gute Möglichkeiten, verzieht sich aber manchmal beim Zielen oder bei der Kraft |
+| **Schwer** | Sehr präziser Gegner mit umfangreicher Suche und nahezu perfekten Stößen |
 
 Der Computer spielt **selbstständig auf dem Server** – ein zweites Browserfenster ist nicht nötig.
 

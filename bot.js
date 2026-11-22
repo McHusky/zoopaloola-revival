@@ -3,6 +3,30 @@
 const {MAX_POWER,POCKETS,shoot,advance,nearestPocket}=require('./game');
 const clamp=(v,low,high)=>Math.max(low,Math.min(high,v));
 
+// On Easy and Normal the computer can still identify promising shots, but it
+// does not execute them with the perfect precision of the physics simulator.
+// Hard deliberately retains the previous precise, deeper search.
+const SKILL = Object.freeze({
+  easy:   Object.freeze({candidates:22, judgement:230, angle:14, power:0.18, slipChance:0.23, slipAngle:12}),
+  normal: Object.freeze({candidates:42, judgement:115, angle:2.7, power:0.075, slipChance:0.20, slipAngle:7.5}),
+  hard:   Object.freeze({candidates:230,judgement:2,   angle:0, power:0, slipChance:0, slipAngle:0})
+});
+
+function imperfectShot(shot,skill,random){
+  if(!skill.angle && !skill.power)return shot;
+  // Clamp custom RNG values (also makes deterministic testing possible).
+  const draw=()=>{
+    const value=Number(random());
+    return Number.isFinite(value)?clamp(value,0,1-Number.EPSILON):0.5;
+  };
+  const signed=()=>draw()*2-1;
+  let angle=Math.atan2(shot.vy,shot.vx)+signed()*skill.angle*Math.PI/180;
+  // An occasional, larger misjudgement simulates a rushed human shot.
+  if(draw()<skill.slipChance)angle+=signed()*skill.slipAngle*Math.PI/180;
+  const power=clamp(Math.hypot(shot.vx,shot.vy)*(1+signed()*skill.power),40,MAX_POWER);
+  return {pieceId:shot.pieceId,vx:Math.cos(angle)*power,vy:Math.sin(angle)*power};
+}
+
 // The CPU uses exactly the same ball physics as a human. It evaluates shots
 // in a private game clone; only its chosen shot is applied to the real game.
 function simulate(game,shot){
@@ -70,11 +94,12 @@ function scoreGame(before,after){
   }
   return score;
 }
-function chooseShot(game,difficulty='normal'){
+function chooseShot(game,difficulty='normal',random=Math.random){
   if(game.phase!=='playing'||game.turn!==1)return null;
   const opts=optionsFor(game);
   if(!opts.length)return null;
-  const max=difficulty==='easy'?58:difficulty==='hard'?230:110;
+  const skill=SKILL[difficulty]||SKILL.normal;
+  const max=skill.candidates;
   // Deterministic stride so all difficulties consider shots from all animals.
   const candidates=opts.length<=max?opts:Array.from({length:max},(_,i)=>opts[Math.floor(i*opts.length/max)]);
   let best=null,bestScore=-Infinity;
@@ -84,9 +109,9 @@ function chooseShot(game,difficulty='normal'){
     if(!out)continue;
     let score=scoreGame(game,out);
     const jitter=Math.sin(i*17.31+shotNumber*7.77)*Math.cos(i*1.93+game.layout);
-    score+=jitter*(difficulty==='easy'?130:difficulty==='hard'?2:33);
+    score+=jitter*skill.judgement;
     if(score>bestScore){bestScore=score;best=shot;}
   }
-  return best||opts[0];
+  return imperfectShot(best||opts[0],skill,random);
 }
 module.exports={chooseShot,optionsFor,scoreGame,simulate};
