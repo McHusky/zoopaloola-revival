@@ -19,13 +19,13 @@ Zoopaloola Revival ist Tier-Billard ohne weiße Kugel: Sechs deiner Kugeln stehe
 - 🎮 **Lokal zu zweit:** beide spielen abwechselnd an einem Gerät.
 - 🎱 **Billard-Physik:** spürbare Bande, präzise Kollisionen, Queue, Zielhilfe und Stoßkraft.
 - ⚡ **Sechs Spezialtaschen:** Jede Falle verabschiedet die Kugeln mit einer eigenen Animation und Soundeffekten.
-- 🔁 **Revanche:** mit wechselnder Startaufstellung.
+- 🔁 **Kreisaufstellung:** zwölf Tierkugeln stehen in jedem Modus und bei jeder Revanche ringförmig bereit.
 
 ## So spielst du
 
 1. Wähle **dein Tier** (Löwe, Elefant, Affe oder Nilpferd) und einen Spielmodus.
 2. **Klicke oder tippe auf eine eigene Kugel.** Ziehe den Queue in die entgegengesetzte Richtung deines gewünschten Stoßes.
-3. Die **Zielhilfe** zeigt die Stoßrichtung und den ersten möglichen Kugeltreffer; der Balken zeigt die Kraft an.
+3. Die **Zielhilfe** zeigt die Stoßrichtung und den ersten möglichen Kugeltreffer; der Balken zeigt die Kraft an. **100 % Stoßkraft** ist die maximal mögliche Schussstärke.
 4. **Loslassen:** Deine Kugel rollt, prallt von Banden ab und stößt andere Kugeln an.
 5. **Versenke alle sechs gegnerischen Kugeln**, ohne selbst alle zu verlieren. Nach jedem Stoß wechselt der Spieler – auch bei einem Treffer.
 

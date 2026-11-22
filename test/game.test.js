@@ -102,3 +102,28 @@ test('billiard energy transfers from the shooter to the target',()=>{
   assert.ok(b.vx>300,`target picks up the speed, got ${b.vx}`);
   assert.ok(a.vx<120,`striker slows down on impact, got ${a.vx}`);
 });
+
+test('all rounds start with the same alternating twelve-animal ring',()=>{
+  const initial=newPieces(0);
+  for(const layout of [1,2,3,9,27]){
+    const pieces=newPieces(layout);
+    assert.deepEqual(pieces.map(p=>[p.id,p.owner,p.x,p.y]),initial.map(p=>[p.id,p.owner,p.x,p.y]));
+  }
+  const cx=480,cy=373,rx=196,ry=171;
+  for(let i=0;i<initial.length;i++){
+    const p=initial[i];
+    const ellipse=(p.x-cx)**2/rx**2+(p.y-cy)**2/ry**2;
+    assert.ok(Math.abs(ellipse-1)<1e-10,`piece ${p.id} must be on the ring`);
+    assert.equal(p.owner,i%2,'the teams must alternate around the ring');
+    assert.ok(p.x>FIELD.left+BALL_R&&p.x<FIELD.right-BALL_R);
+    assert.ok(p.y>FIELD.top+BALL_R&&p.y<FIELD.bottom-BALL_R);
+  }
+});
+
+test('exactly 100 percent power is a legal shot',()=>{
+  const g=initGame();
+  const {MAX_POWER}=require('../game');
+  assert.equal(validShot(g,0,'p0-0',MAX_POWER,0),null);
+  assert.equal(shoot(g,0,'p0-0',MAX_POWER,0),null);
+  assert.equal(Math.hypot(g.pieces[0].vx,g.pieces[0].vy),MAX_POWER);
+});

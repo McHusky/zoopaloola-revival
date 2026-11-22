@@ -22,24 +22,21 @@ const POCKETS = Object.freeze([
   {id:'br', side:'corner', x:FIELD.right, y:FIELD.bottom, effect:'water', capture:43, mouth:69}
 ]);
 
+// The original-inspired twelve-ball ring is shared by solo, local and
+// online play. Rematches keep the same fair circular setup.
+const START_RING = Object.freeze({cx:480, cy:373, rx:196, ry:171});
 function newPieces(layout=0) {
   const pieces=[];
-  function add(owner,x,y) {
-    const count=pieces.filter(p=>p.owner===owner).length;
-    pieces.push({id:`p${owner}-${count}`,owner,x,y,vx:0,vy:0,alive:true,r:BALL_R});
-  }
-  if(layout%3===0){
-    const ys=[195,265,335,408,478,548];
-    ys.forEach((y,i)=>{add(0, i%2?327:255, y);add(1, i%2?633:705, y);});
-  }else if(layout%3===1){
-    for(let i=0;i<12;i++){
-      const a=(Math.PI*2*i/12)-Math.PI/2;
-      add(i%2,480+Math.cos(a)*196,373+Math.sin(a)*171);
-    }
-  }else{
-    const coords=[[250,245],[310,205],[324,315],[250,431],[310,505],[377,372]];
-    coords.forEach(([x,y])=>add(0,x,y));
-    coords.forEach(([x,y])=>add(1,960-x,746-y));
+  for(let i=0;i<12;i++){
+    const owner=i%2;
+    const index=Math.floor(i/2);
+    const angle=i*Math.PI/6-Math.PI/2;
+    pieces.push({
+      id:`p${owner}-${index}`,owner,
+      x:START_RING.cx+Math.cos(angle)*START_RING.rx,
+      y:START_RING.cy+Math.sin(angle)*START_RING.ry,
+      vx:0,vy:0,alive:true,r:BALL_R
+    });
   }
   return pieces;
 }
@@ -198,7 +195,7 @@ function settle(game){
 }
 function publicGame(game){
   return {pieces:game.pieces.map(({id,owner,x,y,vx,vy,alive})=>({id,owner,x:Math.round(x*10)/10,y:Math.round(y*10)/10,vx:Math.round(vx),vy:Math.round(vy),alive})),
-    turn:game.turn,phase:game.phase,winner:game.winner,shots:game.shots,lastAction:game.lastAction,
+    turn:game.turn,phase:game.phase,winner:game.winner,shots:game.shots,maxPower:MAX_POWER,lastAction:game.lastAction,
     layout:game.layout,events:game.events.slice(-30),remaining:[0,1].map(o=>game.pieces.filter(p=>p.owner===o&&p.alive).length)};
 }
-module.exports={WIDTH,HEIGHT,FIELD,BALL_R,MAX_POWER,POCKETS,FRICTION,initGame,newPieces,validShot,shoot,advance,settle,publicGame,pocketAt,nearestPocket};
+module.exports={WIDTH,HEIGHT,FIELD,BALL_R,MAX_POWER,START_RING,POCKETS,FRICTION,initGame,newPieces,validShot,shoot,advance,settle,publicGame,pocketAt,nearestPocket};

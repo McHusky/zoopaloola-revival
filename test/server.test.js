@@ -1,7 +1,7 @@
 'use strict';
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const {createServer}=require('../server');
+const {createServer,rooms}=require('../server');
 
 function serverHarness() {
   const server=createServer();
@@ -108,4 +108,40 @@ test('the CPU automatically responds after a player shot finishes', {timeout:120
     }
     assert.ok(final.game.shots>=2,'the bot must shoot automatically without a second browser');
   } finally{await s.close();}
+});
+
+test('all game modes start in the same ring and accept full-power shots',async()=>{
+  const s=await serverHarness();
+  try{
+    const common=await s.call('POST','/api/rooms',{name:'Local',local:true});
+    const solo=await s.call('POST','/api/rooms',{name:'Human',vsBot:true,difficulty:'easy'});
+    const online=await s.call('POST','/api/rooms',{name:'Host'});
+    const join=await s.call('POST',`/api/rooms/${online.data.code}/join`,{name:'Guest'});
+    assert.equal(join.status,200);
+    const starts=[common.data.game.pieces,solo.data.game.pieces,online.data.game.pieces];
+    for(const pieces of starts){
+      assert.deepEqual(pieces.map(p=>[p.id,p.x,p.y]),starts[0].map(p=>[p.id,p.x,p.y]));
+    }
+    for(const created of [common,solo,online]){
+      const response=await s.call('POST',`/api/rooms/${created.data.code}/shoot`,
+        {token:created.data.token,pieceId:'p0-0',vx:0,vy:1020});
+      assert.equal(response.status,200,`full power must work in ${created.data.code}: ${response.data.error}`);
+    }
+  }finally{await s.close();}
+});
+
+
+test('rematches keep the circular formation',async()=>{
+  const s=await serverHarness();
+  try {
+    const created=await s.call('POST','/api/rooms',{name:'Two friends',local:true});
+    const {code,token}=created.data;
+    rooms.get(code).game.phase='finished';
+    const rematch=await s.call('POST',`/api/rooms/${code}/rematch`,{token});
+    assert.equal(rematch.status,200);
+    const replay=await s.call('GET',`/api/rooms/${code}`);
+    assert.equal(replay.data.game.phase,'playing');
+    assert.deepEqual(replay.data.game.pieces.map(p=>[p.id,p.x,p.y]),
+      created.data.game.pieces.map(p=>[p.id,p.x,p.y]));
+  }finally{await s.close();}
 });

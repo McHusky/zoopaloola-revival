@@ -4,6 +4,8 @@
   const canvas = $('gameCanvas');
   const ctx = canvas.getContext('2d');
   const W = 960, H = 720;
+  const DEFAULT_MAX_POWER = 1020, FULL_POWER_DRAG = 130;
+  const shotStrength = distance => Math.min(1, Math.max(0, distance / FULL_POWER_DRAG));
   const F = { l:108, r:852, t:122, b:624 };
   const ICONS = { lion:'🦁', elephant:'🐘', monkey:'🐒', hippo:'🦛' };
   // Four corner pockets plus centre pockets on the two long rails.
@@ -21,10 +23,12 @@
   const positions=new Map(), effects=[], seenEvents=new Set();
   let toastTimeout=null, sceneMode='preview';
   const demo = {game:{pieces:[],phase:'playing',turn:0,remaining:[6,6],shots:0,events:[]},players:[{name:'Sunny',species:'lion'},{name:'Moon',species:'hippo'}],phase:'playing'};
-  const Y=[195,265,335,408,478,548];
-  for(let i=0;i<6;i++){
-    demo.game.pieces.push({id:'p0-'+i,owner:0,x:i%2?327:255,y:Y[i],vx:0,vy:0,alive:true});
-    demo.game.pieces.push({id:'p1-'+i,owner:1,x:i%2?633:705,y:Y[i],vx:0,vy:0,alive:true});
+  // The lobby preview uses the same circular layout as all game modes.
+  for(let i=0;i<12;i++){
+    const angle=i*Math.PI/6-Math.PI/2;
+    const owner=i%2;
+    demo.game.pieces.push({id:`p${owner}-${Math.floor(i/2)}`,owner,
+      x:480+Math.cos(angle)*196,y:373+Math.sin(angle)*171,vx:0,vy:0,alive:true});
   }
   let roomState=demo;
 
@@ -127,7 +131,7 @@
     $('turnLabel').textContent=g.phase==='finished'?'SPIEL BEENDET':data.phase==='waiting'?'WARTE AUF DEINEN FREUND':ourTurn?'DU BIST AM ZUG':data.bot?'COMPUTER IST DRAN':'GEGNER IST AM ZUG';
     $('turnIndicator').style.color=g.turn===0?'#f3a864':'#7acbee';
     $('rematch').classList.toggle('hidden',g.phase!=='finished');
-    $('instruction').textContent=data.phase==='waiting'?'Sobald dein Freund beigetreten ist, kann es losgehen.':g.phase==='finished'?'Lust auf eine Revanche? Die Startaufstellung aendert sich bei jeder Runde.':g.phase==='moving'?'Warte, bis alle Tierkugeln ausgerollt sind.':ourTurn?'Wähle eine eigene Kugel, ziehe den Queue zurück und lasse los. Über die Zielhilfe erkennst du den Trefferpunkt.':data.bot?'Der Computer berechnet seinen nächsten Stoß …':'Schau zu, wie dein Gegner seinen Stoß vorbereitet.';
+    $('instruction').textContent=data.phase==='waiting'?'Sobald dein Freund beigetreten ist, kann es losgehen.':g.phase==='finished'?'Lust auf eine Revanche? Auch die nächste Runde startet im Kreis.':g.phase==='moving'?'Warte, bis alle Tierkugeln ausgerollt sind.':ourTurn?'Wähle eine eigene Kugel, ziehe den Queue zurück und lasse los. Über die Zielhilfe erkennst du den Trefferpunkt.':data.bot?'Der Computer berechnet seinen nächsten Stoß …':'Schau zu, wie dein Gegner seinen Stoß vorbereitet.';
   }
   function updateOverlay() {
     const overlay=$('arenaOverlay');
@@ -532,7 +536,7 @@
     if(!drag||!d)return;
     const dx=drag.startX-drag.x,dy=drag.startY-drag.y,mag=Math.hypot(dx,dy);
     if(mag<3)return;
-    const power=Math.min(130,mag),nx=dx/mag,ny=dy/mag;
+    const strength=shotStrength(mag),power=FULL_POWER_DRAG*strength,nx=dx/mag,ny=dy/mag;
     ctx.save();ctx.translate(d.x,d.y);
     // Preview the first ball-to-ball impact instead of a generic arrow.
     const game=roomState.game;
@@ -569,8 +573,8 @@
     rr(meterX,meterY,166,15,7,'#0b201cdd','#f1daa077',1);
     const gradient=ctx.createLinearGradient(meterX,0,meterX+163,0);
     gradient.addColorStop(0,'#8fe778');gradient.addColorStop(.62,'#f2d366');gradient.addColorStop(1,'#e85c37');
-    rr(meterX+3,meterY+3,Math.max(1,160*power/130),9,4,gradient);
-    text(`STOßKRAFT ${Math.round(power/130*100)}%`,meterX+83,meterY-7,'bold 11px Trebuchet MS','#f6f2cf');
+    rr(meterX+3,meterY+3,Math.max(1,160*strength),9,4,gradient);
+    text(`STOßKRAFT ${Math.round(strength*100)}%`,meterX+83,meterY-7,'bold 11px Trebuchet MS','#f6f2cf');
   }
   let lastDrawTime=0;
   function draw(t){
@@ -616,7 +620,10 @@
     const dx=sel.startX-pointNow.x,dy=sel.startY-pointNow.y;
     const mag=Math.hypot(dx,dy);
     if(mag<8){showToast('Ziehe das Tier nach hinten, dann loslassen!');return;}
-    const power=Math.min(1050,mag*7.9),vx=dx/mag*power,vy=dy/mag*power;
+    // The authoritative server exposes its power ceiling with the game state.
+    // 100% on the UI maps to that precise value, even if it changes later.
+    const maxPower=current.game.maxPower??DEFAULT_MAX_POWER;
+    const power=maxPower*shotStrength(mag),vx=dx/mag*power,vy=dy/mag*power;
     try {await send('POST',`/api/rooms/${session.code}/shoot`,{token:session.token,pieceId:sel.id,vx,vy});}
     catch(e){showToast(e.message);}
   });
