@@ -6,6 +6,8 @@
 
 **Ein kostenloses, unabhängiges Fanprojekt, inspiriert vom ICQ-Klassiker Zoopaloola.**
 
+### 🎮 [**JETZT ZOOPALOOLA REVIVAL SPIELEN**](https://zoopaloola-revival.onrender.com/)
+
 [**Spielregeln**](#so-spielst-du) · [**Solomodus**](#solo-gegen-den-computer) · [**Screenshots**](#screenshots) · [**Das Original**](#danke-an-das-original)
 
 </div>
@@ -22,6 +24,8 @@ Zoopaloola Revival ist Tier-Billard ohne weiße Kugel: Sechs deiner Kugeln stehe
 - 🔁 **Kreisaufstellung:** zwölf Tierkugeln stehen in jedem Modus und bei jeder Revanche ringförmig bereit.
 
 ## So spielst du
+
+**[Spiel direkt im Browser öffnen](https://zoopaloola-revival.onrender.com/)** – kostenlos und ohne Installation.
 
 1. Wähle **dein Tier** (Löwe, Elefant, Affe oder Nilpferd) und einen Spielmodus.
 2. **Klicke oder tippe auf eine eigene Kugel.** Ziehe den Queue in die entgegengesetzte Richtung deines gewünschten Stoßes.
@@ -43,7 +47,7 @@ Der Computer spielt **selbstständig auf dem Server** – ein zweites Browserfen
 
 ### Mit Freunden spielen
 
-Klicke auf **Privaten Raum erstellen**, kopiere den Einladungslink und schicke ihn deinem Freund über Discord. Sobald er beitritt, beginnt die Partie. Oder wähle **Lokal zu zweit** für einen gemeinsamen Bildschirm.
+Öffne [Zoopaloola Revival](https://zoopaloola-revival.onrender.com/), klicke auf **Privaten Raum erstellen**, kopiere den Einladungslink und schicke ihn deinem Freund über Discord. Sobald er beitritt, beginnt die Partie. Oder wähle **Lokal zu zweit** für einen gemeinsamen Bildschirm.
 
 ## Sechs Taschen. Sechs spektakuläre Fallen.
 
