@@ -4,10 +4,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { initGame, shoot, advance, publicGame } = require('./game');
+const { chooseShot } = require('./bot');
 
 const rooms = new Map();
 const PUBLIC = path.join(__dirname, 'public');
 const SPECIES = new Set(['lion','elephant','monkey','hippo']);
+const DIFFICULTIES = new Set(['easy','normal','hard']);
 const MIME = { '.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf-8', '.js':'application/javascript; charset=utf-8', '.svg':'image/svg+xml', '.png':'image/png', '.ico':'image/x-icon' };
 const safeName = s => (typeof s === 'string' ? s.trim().replace(/[<>\x00-\x1f]/g, '').slice(0,22) : '') || 'Dschungelheld';
 const safeSpecies = s => SPECIES.has(s) ? s : 'lion';
@@ -19,16 +21,19 @@ function roomCode() {
   return code;
 }
 function makePlayer(name, species, seat) { return { seat, name: safeName(name), species: safeSpecies(species), token: token() }; }
-function makeRoom({ name, species, local = false }) {
+function makeRoom({ name, species, local = false, vsBot = false, difficulty = 'normal' }) {
   const code = roomCode();
   const players = [makePlayer(name,species,0)];
+  const bot=!!vsBot&&!local;
+  const level=DIFFICULTIES.has(difficulty)?difficulty:'normal';
   if (local) players.push(makePlayer('Spieler 2','hippo',1));
-  const room = { code, players, local: !!local, game: initGame(0), phase: local ? 'playing' : 'waiting', seq:0, streams:new Set(), updated: Date.now(), layout: 0, started: Date.now() };
+  if (bot) players.push(makePlayer('Computer', 'elephant',1));
+  const room = { code, players, local: !!local, bot, difficulty:level, botThinking:false, game: initGame(0), phase: (local||bot) ? 'playing' : 'waiting', seq:0, streams:new Set(), updated: Date.now(), layout: 0, started: Date.now() };
   rooms.set(code,room);
   return room;
 }
 function state(room) {
-  return { code:room.code, seq:room.seq, local:room.local, phase:room.phase,
+  return { code:room.code, seq:room.seq, local:room.local, bot:room.bot, difficulty:room.difficulty, botThinking:room.botThinking, phase:room.phase,
     players:room.players.map(({seat,name,species}) => ({seat,name,species})),
     game:publicGame(room.game), online:room.players.length === 2, timestamp:Date.now() };
 }
@@ -47,6 +52,21 @@ function identity(room, key) {
   return room.players.find(p => p.token === key);
 }
 const intervals = new Map();
+const botTimers = new Map();
+function scheduleBot(room) {
+  if (!room.bot || room.game.phase !== 'playing' || room.game.turn !== 1 || botTimers.has(room.code)) return;
+  room.botThinking=true;broadcast(room);
+  const tid=setTimeout(()=>{
+    botTimers.delete(room.code);
+    if(rooms.get(room.code)!==room || room.game.phase!=='playing' || room.game.turn!==1)return;
+    const shot=chooseShot(room.game,room.difficulty);
+    room.botThinking=false;
+    if(!shot){broadcast(room);return;}
+    const err=shoot(room.game,1,shot.pieceId,shot.vx,shot.vy);
+    if(!err){broadcast(room);startPhysics(room);}
+  },room.difficulty==='hard'?850:650);
+  botTimers.set(room.code,tid);
+}
 function startPhysics(room) {
   if (intervals.has(room.code)) return;
   let ticks = 0;
@@ -54,6 +74,7 @@ function startPhysics(room) {
     if (room.game.phase !== 'moving') {clearInterval(interval);intervals.delete(room.code);return;}
     advance(room.game,1/60);
     ticks++;
+    if(room.game.phase==='playing' && room.bot) scheduleBot(room);
     if (ticks % 3 === 0 || room.game.phase !== 'moving') broadcast(room);
   },1000/60);
   intervals.set(room.code,interval);
@@ -117,7 +138,9 @@ function handleAPI(req,res,url) {
     room.layout=(room.layout+1)%3;
     room.game=initGame(room.layout);
     room.game.turn=room.layout%2;
+    room.botThinking=false;
     broadcast(room);
+    scheduleBot(room);
     return sendJSON(res,200,{ok:true,seq:room.seq});
   }).catch(e=>fail(res,400,e.message));
   return fail(res,404,'Unbekannter Endpunkt');
@@ -147,7 +170,8 @@ const cleaner=setInterval(()=>{
     if(now-room.updated > 2*60*60*1000 && room.game.phase!=='moving') {
       rooms.delete(code);
       room.streams.forEach(s=>s.end());
-      const timer=intervals.get(code);if(timer)clearInterval(timer);
+      const timer=intervals.get(code);if(timer){clearInterval(timer);intervals.delete(code);}
+      const botTimer=botTimers.get(code);if(botTimer){clearTimeout(botTimer);botTimers.delete(code);}
     }
   }
 },5*60*1000);

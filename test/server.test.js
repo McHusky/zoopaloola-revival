@@ -76,3 +76,36 @@ test('server-sent events stream delivers new room state after joining',async()=>
     await reader.cancel();
   } finally { ctl.abort();await s.close(); }
 });
+
+test('solo mode creates an immediate match against a server-side CPU',async()=>{
+  const s=await serverHarness();
+  try{
+    const created=await s.call('POST','/api/rooms',{name:'Human',species:'monkey',vsBot:true,difficulty:'hard'});
+    assert.equal(created.status,201);
+    assert.equal(created.data.phase,'playing');
+    assert.equal(created.data.players.length,2);
+    assert.equal(created.data.players[1].name,'Computer');
+    assert.equal(created.data.bot,true);
+    assert.equal(created.data.difficulty,'hard');
+    assert.equal(created.data.tokens,undefined);
+    assert.equal((await s.call('POST',`/api/rooms/${created.data.code}/join`,{name:'Cheater'})).status,409);
+    assert.equal((await s.call('POST',`/api/rooms/${created.data.code}/shoot`,{token:created.data.token,pieceId:'p1-0',vx:500,vy:0})).status,409);
+  }finally{await s.close();}
+});
+test('the CPU automatically responds after a player shot finishes', {timeout:12000}, async()=>{
+  const s=await serverHarness();
+  try{
+    const created=await s.call('POST','/api/rooms',{name:'Human',vsBot:true,difficulty:'easy'});
+    assert.equal((await s.call('POST',`/api/rooms/${created.data.code}/shoot`,{
+      token:created.data.token,pieceId:'p0-0',vx:210,vy:0
+    })).status,200);
+    let final=null;
+    for(let i=0;i<65;i++){
+      await new Promise(r=>setTimeout(r,100));
+      const next=await s.call('GET',`/api/rooms/${created.data.code}`);
+      final=next.data;
+      if(final.game.shots>=2)break;
+    }
+    assert.ok(final.game.shots>=2,'the bot must shoot automatically without a second browser');
+  } finally{await s.close();}
+});

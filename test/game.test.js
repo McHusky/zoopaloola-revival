@@ -1,7 +1,7 @@
 'use strict';
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const {initGame,shoot,advance,settle,validShot,pocketAt,BALL_R,FIELD,newPieces}=require('../game');
+const {initGame,shoot,advance,settle,validShot,pocketAt,BALL_R,FIELD,newPieces,POCKETS,nearestPocket}=require('../game');
 
 test('every starting layout has six distinct discs for each player',()=>{
   for(let i=0;i<3;i++){
@@ -35,12 +35,13 @@ test('a standard shot settles and alternates turns',()=>{
   assert.equal(g.shots,1);
 });
 test('wall rebounds outside gaps and open pockets identify the correct effect',()=>{
-  assert.equal(pocketAt('top',264).effect,'ice');
-  assert.equal(pocketAt('top',400),null);
+  assert.equal(pocketAt('top',480).effect,'ice');
+  assert.equal(pocketAt('top',264),null);
+  assert.deepEqual(POCKETS.map(p=>p.id),['tl','tm','tr','bl','bm','br']);
   const g=initGame(0);
   const p=g.pieces[0];
   g.pieces.slice(1).forEach(x=>x.alive=false);
-  p.x=480;p.y=FIELD.top+BALL_R+1;p.vy=-210;
+  p.x=400;p.y=FIELD.top+BALL_R+1;p.vy=-210;
   g.phase='moving';advance(g);
   assert.ok(p.vy>0);
   assert.equal(p.alive,true);
@@ -48,7 +49,7 @@ test('wall rebounds outside gaps and open pockets identify the correct effect',(
 test('disc falling into pocket is removed with hazard event',()=>{
   const g=initGame(0);g.phase='moving';
   const p=g.pieces[0];g.pieces.slice(1).forEach(x=>x.alive=false);
-  p.x=264;p.y=FIELD.top+BALL_R-2;p.vy=-330;
+  p.x=480;p.y=FIELD.top+BALL_R+19;p.vy=-330;
   for(let i=0;i<30&&p.alive;i++)advance(g);
   assert.equal(p.alive,false);
   assert.ok(g.events.some(e=>e.type==='pocket'&&e.effect==='ice'));
@@ -64,4 +65,40 @@ test('both players knocked out ends in a draw',()=>{
   g.pieces.forEach(p=>p.alive=false);
   g.phase='moving';settle(g);
   assert.equal(g.phase,'finished');assert.equal(g.winner,-1);
+});
+
+test('corner pockets capture a ball and report the exact trap position for animation',()=>{
+  const g=initGame();g.phase='moving';
+  const p=g.pieces[0];g.pieces.slice(1).forEach(x=>x.alive=false);
+  p.x=FIELD.left+BALL_R+20;p.y=FIELD.top+BALL_R+20;
+  p.vx=-550;p.vy=-550;
+  for(let i=0;i<20&&p.alive;i++)advance(g);
+  assert.equal(p.alive,false);
+  const event=g.events.find(e=>e.type==='pocket');
+  assert.equal(event.effect,'laser');
+  assert.equal(event.pocketId,'tl');
+  assert.equal(event.pocketX,FIELD.left);
+  assert.equal(event.pocketY,FIELD.top);
+});
+test('no pockets appear in the middle of left and right rails',()=>{
+  assert.equal(POCKETS.length,6);
+  assert.equal(POCKETS.filter(p=>p.side==='corner').length,4);
+  assert.equal(POCKETS.filter(p=>p.side==='top').length,1);
+  assert.equal(POCKETS.filter(p=>p.side==='bottom').length,1);
+  const g=initGame();g.phase='moving';
+  const p=g.pieces[0];g.pieces.slice(1).forEach(x=>x.alive=false);
+  p.x=FIELD.left+BALL_R+1;p.y=FIELD.top+250;p.vx=-320;p.vy=0;
+  for(let i=0;i<8;i++)advance(g);
+  assert.equal(p.alive,true);
+  assert.ok(p.vx>0,'the cushion rebounds the disc');
+});
+test('billiard energy transfers from the shooter to the target',()=>{
+  const g=initGame();g.phase='moving';
+  const a=g.pieces[0],b=g.pieces[1];
+  g.pieces.slice(2).forEach(p=>p.alive=false);
+  a.x=300;a.y=360;a.vx=540;a.vy=0;
+  b.x=357;b.y=360;b.vx=0;b.vy=0;
+  for(let i=0;i<12;i++)advance(g);
+  assert.ok(b.vx>300,`target picks up the speed, got ${b.vx}`);
+  assert.ok(a.vx<120,`striker slows down on impact, got ${a.vx}`);
 });

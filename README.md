@@ -1,60 +1,84 @@
 <div align="center">
 
-# ZOOPALOOLA REVIVAL
+# ZOOPALOOLA REVIVAL 🦁 🎱
 
-### Kleine Tiere. Große Duelle. Das tierische Billardspiel ist zurück!
+### Kleine Tiere. Große Duelle. Zurück an den Billardtisch!
 
-**Ein unabhängiges, kostenloses Fanprojekt, inspiriert vom ICQ-Klassiker Zoopaloola.**
+**Ein kostenloses, unabhängiges Fanprojekt, inspiriert vom ICQ-Klassiker Zoopaloola.**
 
-[**ZUM SPIEL**](#spielen) | [Vorschau](#spielgrafik--vorschau) | [Spielregeln](#spielregeln) | [Das Original](#credits--original)
+[**Spielregeln**](#so-spielst-du) · [**Solomodus**](#solo-gegen-den-computer) · [**Screenshots**](#screenshots) · [**Das Original**](#danke-an-das-original)
 
 </div>
 
-## Das Spiel
+## Willkommen zurück im Dschungel
 
-Willkommen im Dschungel! Zwei Spieler treffen sich auf einer grünen Insel, um mit ihren tierischen Kugeln gegnerische Tiere von der Klippe zu schubsen. Ein bisschen Billard, ein bisschen Chaos und sehr viel Nostalgie.
+Zoopaloola Revival ist Tier-Billard ohne weiße Kugel: Sechs deiner Kugeln stehen sechs gegnerischen gegenüber. Jede eigene Kugel darfst du anstoßen. Wer seine Gegner in die Taschen befördert und seine eigene Tierbande behält, gewinnt.
 
-- **2 Spieler:** private Räume mit Einladungslink für Discord oder lokales Duell an einem Gerät
-- **12 Tiere:** sechs pro Team, mit Löwen, Elefanten, Affen oder Nilpferden
-- **Klick, ziehen, loslassen:** Richtung und Stärke des Schusses bestimmen
-- **Bunte Arena:** Original-inspirierte Dschungelwelt mit Steinwänden und Spezial-Lücken
-- **Sound an!** Neue, eigens generierte Musik und Effekte im Browser
-- **Revanche:** neue Startaufstellungen in der nächsten Runde
+- 🎯 **Solo gegen den Computer:** drei Schwierigkeitsgrade.
+- 🧑‍🤝‍🧑 **Online gegen Freunde:** private Räume mit Einladungslink, zum Beispiel für Discord.
+- 🎮 **Lokal zu zweit:** beide spielen abwechselnd an einem Gerät.
+- 🎱 **Billard-Physik:** spürbare Bande, präzise Kollisionen, Queue, Zielhilfe und Stoßkraft.
+- ⚡ **Sechs Spezialtaschen:** Jede Falle verabschiedet die Kugeln mit einer eigenen Animation und Soundeffekten.
+- 🔁 **Revanche:** mit wechselnder Startaufstellung.
 
-## Spielen
+## So spielst du
 
-1. Spiel im Browser aufrufen.
-2. Namen und Tier wählen und auf **Privaten Raum erstellen** klicken.
-3. **Einladung kopieren** und den Link über Discord mit einem Freund teilen.
-4. Dein Freund tritt bei. Schon könnt ihr spielen!
+1. Wähle **dein Tier** (Löwe, Elefant, Affe oder Nilpferd) und einen Spielmodus.
+2. **Klicke oder tippe auf eine eigene Kugel.** Ziehe den Queue in die entgegengesetzte Richtung deines gewünschten Stoßes.
+3. Die **Zielhilfe** zeigt die Stoßrichtung und den ersten möglichen Kugeltreffer; der Balken zeigt die Kraft an.
+4. **Loslassen:** Deine Kugel rollt, prallt von Banden ab und stößt andere Kugeln an.
+5. **Versenke alle sechs gegnerischen Kugeln**, ohne selbst alle zu verlieren. Nach jedem Stoß wechselt der Spieler – auch bei einem Treffer.
 
-Du kannst auch **Lokal zu zweit spielen**, ohne jemanden einzuladen.
+### Solo gegen den Computer
 
-## Spielregeln
+Wähle **Solo spielen** und stelle den Schwierigkeitsgrad ein:
 
-1. Jeder hat **sechs Tiere** auf dem Spielfeld.
-2. Wer an der Reihe ist, klickt eines seiner eigenen Tiere an, zieht mit Maus oder Finger **entgegen der gewünschten Schussrichtung** und laesst los.
-3. Die Tiere stoßen wie Billardkugeln zusammen. An den offenen Klippenabschnitten können sie aus der Arena fallen.
-4. Danach ist **immer der andere Spieler am Zug**, auch wenn jemand ein Tier versenkt hat.
-5. Wer **alle gegnerischen Tiere vom Spielfeld entfernt**, gewinnt.
+| Schwierigkeit | Was dich erwartet |
+|---|---|
+| **Einfach** | Lockerer Einstieg mit gelegentlichen Fehlschüssen |
+| **Normal** | Der Computer prüft mehr Stoßmöglichkeiten |
+| **Schwer** | Bessere Schussauswahl anhand simulierter Kugelbahnen |
 
-## Spielgrafik & Vorschau
+Der Computer spielt **selbstständig auf dem Server** – ein zweites Browserfenster ist nicht nötig.
 
-Die Bilder unten wurden direkt mit dem eigenen Canvas-Zeichenprogramm des Spiels gerendert.
+### Mit Freunden spielen
 
-**Die Dschungelarena**
+Klicke auf **Privaten Raum erstellen**, kopiere den Einladungslink und schicke ihn deinem Freund über Discord. Sobald er beitritt, beginnt die Partie. Oder wähle **Lokal zu zweit** für einen gemeinsamen Bildschirm.
 
-![Die Dschungelarena mit 12 Tier-Spielsteinen](previews/arena.png)
+## Sechs Taschen. Sechs spektakuläre Fallen.
 
-**Zielen und Schießen**
+Wie an einem klassischen Billardtisch gibt es **vier Ecktaschen und zwei mittige Taschen** an den langen Seiten. Wo Kugeln im echten Billard einfach verschwinden, warten hier verschiedene Überraschungen:
 
-![Ein Tier wird für den Schuss zurückgezogen, inklusive Richtungsanzeige](previews/arena-aim.png)
+| Tasche | Was beim Versenken passiert |
+|---|---|
+| Oben links | 🔴 Laser – brutzelt die Kugel weg |
+| Oben Mitte | ❄️ Eis – friert die Kugel ein und lässt sie zerbrechen |
+| Oben rechts | 🔨 Hammer – hämmert die Kugel platt |
+| Unten links | 🔥 Feuer – lässt die Kugel in Flammen verschwinden |
+| Unten Mitte | ⚡ Strom – zerlegt die Kugel in Funken |
+| Unten rechts | 💦 Wasser – mit einem kräftigen Platscher |
 
-## Credits & Original
+Alle Grafiken und Soundeffekte sind neu für dieses Fanprojekt erstellt.
 
-Ein herzliches Dankeschön an die Menschen hinter **Zoopaloola**, einem Teil der ICQ-Spielkultur der 2000er-Jahre. Diese inoffizielle Neuinterpretation ist inspiriert von den Spielregeln und der Stimmung des Originals.
+## Screenshots
 
-- [Gameplay-Video: Zoopaloola Online - ICQ Games (6games, 2022)](https://www.youtube.com/watch?v=pTyRH9i6BP0)
-- [Zeitgenössische Spielbeschreibung (Pocket Gamer, 2008)](https://www.pocketgamer.com/zoopaloola/review/)
+**Die neue Sechs-Taschen-Arena**
 
-**Disclaimer:** Dies ist ein unabhängiges Fanprojekt, nicht mit den damaligen Entwicklern, Herausgebern oder Rechteinhabern verbunden. Grafiken, Musik und Soundeffekte wurden für dieses Projekt neu gestaltet. Originale Spieledateien, Kunstwerke oder Audioaufnahmen sind nicht enthalten. Die Tatsache, dass eine alte Markenregistrierung gelöscht wurde, bedeutet nicht, dass historische Spieleassets gemeinfrei sind.
+![Zoopaloola mit klassischem Sechs-Taschen-Spielfeld](previews/arena.png)
+
+**Billard-Queue, Zielhilfe und Stoßkraftanzeige**
+
+![Stoßrichtung und Kraftanzeige beim Zielen](previews/arena-aim.png)
+
+**Wenn der Laser eine Kugel wegbrutzelt**
+
+![Eigene Laser-Zerstörungsanimation am Eckloch](previews/arena-trap-laser.png)
+
+## Danke an das Original
+
+Zoopaloola und sein wildes Tier-Billard gehören zu den schönsten Erinnerungen an die ICQ-Spiele der 2000er-Jahre. Danke an die damaligen Entwickler und Künstler für die Idee und all die nostalgischen Matches.
+
+- [Gameplay-Video: *Zoopaloola Online – ICQ Games* (6games, 2022)](https://www.youtube.com/watch?v=pTyRH9i6BP0)
+- [Historischer Spieltest (Pocket Gamer, 2008)](https://www.pocketgamer.com/zoopaloola/review/)
+
+**Hinweis:** Dies ist ein inoffizielles, eigenständig erstelltes Fanprojekt ohne Verbindung zu damaligen Rechteinhabern. Es verwendet keine übernommenen Originalgrafiken, Musikaufnahmen, Stimmen oder Sounddateien. Die genannten Namen dienen der Einordnung und Hommage.
