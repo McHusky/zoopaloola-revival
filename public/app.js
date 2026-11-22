@@ -257,7 +257,7 @@
     if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.lineWidth=width;ctx.strokeStyle=stroke;ctx.stroke();}
   }
   function line(x1,y1,x2,y2,stroke,width=1){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke();}
-  function circle(x,y,r,fill,stroke,width=1){ctx.beginPath();ctx.arc(x,y,r,0,TAU);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke();}}
+  function circle(x,y,r,fill,stroke,width=1){if(!Number.isFinite(r)||r<0)return;ctx.beginPath();ctx.arc(x,y,r,0,TAU);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke();}}
   function ellipse(x,y,rx,ry,fill){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,TAU);ctx.fillStyle=fill;ctx.fill();}
   function text(t,x,y,font,color,align='center'){ctx.font=font;ctx.textAlign=align;ctx.fillStyle=color;ctx.fillText(t,x,y);}
   function water(t){
@@ -509,7 +509,12 @@
         }
         if(e.effect==='water'){
           ctx.save();ctx.globalAlpha=fade;
-          for(let j=0;j<3;j++)circle(0,0,progress*105-j*21,null,'#a1efff',4);
+          // Ripple rings appear one after another. A negative radius would
+          // throw IndexSizeError in Canvas 2D and permanently stop draw().
+          for(let j=0;j<3;j++){
+            const radius=progress*105-j*21;
+            if(radius>0)circle(0,0,radius,null,'#a1efff',4);
+          }
           for(let j=0;j<12;j++){const a=j*TAU/12+e.seed;const r=progress*80+10;circle(Math.cos(a)*r,Math.sin(a)*r,3.6,'#82daf7');}
           ctx.restore();
         }
